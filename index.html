@@ -66,6 +66,40 @@ label{display:block;font-size:.85rem;color:var(--mut)}
 .pwx{display:flex;gap:4px;align-items:stretch}
 .mods{display:grid;gap:4px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .ck{display:flex;gap:6px;align-items:center;color:var(--ink);font-size:.9rem}.ck input{width:auto}
+
+/* ---- poderes ---- */
+.sh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.sh h2{margin:0}
+.pbt{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.bnb{display:flex;flex-direction:column;font-size:.85rem;color:var(--mut)}.bnb b{font:800 1.5rem Cinzel,serif;color:var(--ink);line-height:1.25}
+.pl{display:flex;flex-direction:column;gap:8px}
+.pw{background:var(--field);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pw[open]{border-color:var(--brass)}
+.pw>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 12px}
+.pw>summary::-webkit-details-marker{display:none}
+.cv{width:0;height:0;border-left:7px solid var(--mut);border-top:5px solid transparent;border-bottom:5px solid transparent;transition:transform .15s}
+.pw[open] .cv{transform:rotate(90deg)}
+.pwi{min-width:0;display:flex;flex-direction:column;gap:3px}
+.pwn{font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tg{font-size:.78rem;line-height:1.5;border:1px solid var(--line);border-radius:999px;padding:0 8px;white-space:nowrap;color:var(--mut);background:var(--card)}
+.tg.pp{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+.pre{font-size:.85rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pw[open] .pre{display:none}
+.cb{background:var(--red);color:#fff;border-color:var(--red);font-weight:700;white-space:nowrap}
+.pwb{padding:4px 14px 12px 36px;border-top:1px dashed var(--line)}
+.pwb p{margin:8px 0;line-height:1.5}
+.pwm{margin:10px 0}.pwm>b{font-size:.85rem;color:var(--mut)}
+.pml{list-style:none;margin:4px 0 0;padding:0}
+.pml li{display:flex;justify-content:space-between;gap:12px;padding:3px 0;border-bottom:1px dashed var(--line)}
+.pml li b{white-space:nowrap}
+.pwb .bt{justify-content:flex-start;margin-top:8px}
+.ac{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}
+.ac .an{flex:1 1 170px;min-width:0;display:flex;flex-direction:column}.ac .an small{color:var(--mut)}
+.ac label{display:flex;gap:6px;align-items:center}.ac label input{width:64px}
+.mrow{display:grid;grid-template-columns:minmax(0,1fr) 70px 34px;gap:6px;align-items:start;margin-top:6px}
+.mrow label{font-size:.75rem}
+.mrn,.cxn{min-height:0;resize:none;overflow:hidden;line-height:1.3}
+@media(max-width:420px){.pw>summary{grid-template-columns:14px minmax(0,1fr)}.pw>summary .cb{grid-column:2;justify-self:start}}
 @media print{header,.no,#roll,#toast,#ov,#lobby,.tabs,.por .ph{display:none}body{background:#fff}main{display:block}section{break-inside:avoid;margin-bottom:8px}button{display:none}.pip{display:inline-block}}
 </style>
 </head>
@@ -226,9 +260,16 @@ $('ih').textContent='Idiomas extras: '+(S.att.ast+1)+' (além de Comum)';
 var p=S.ferm+S.fad;document.getElementById('pen').textContent=p?'Penalidade total: −'+p:''}
 function lst(k,t){return '<section class="wide"><h2>'+t+'</h2><div class="chips">'+S[k].map(function(x,i){return '<button class="chip" data-o="'+k+':'+i+'">'+esc(x.n||'(sem nome)')+'</button>'}).join('')+'<button class="chip no" data-a="'+k+'">+ Adicionar</button></div></section>'}
 function meta(x){return [x.pp?x.pp+' PP':'',x.r,x.dur].filter(Boolean).map(esc).join(' · ')}
-function renderPw(){var h='<section class="wide"><h2>Pontos de Poder</h2><div class="g"><label>Atuais<input type="number" data-k="ppa" value="'+S.ppa+'"></label><label>Máximo<input type="number" data-k="ppm" value="'+S.ppm+'"></label></div><div class="no" style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button data-pp5="1">Recuperar 5 PP (gasta 1 Bene)</button><button data-rest="1">Descanso de 1 hora (+5 PP)</button><button data-cast="-1">Conjurar truque</button><span class="pt" style="margin:0">Benes: <b id="pwb">'+S.bn.a+'</b></span></div></section>';
-if(S.act.length)h+='<section class="wide"><h2>Poderes ativos</h2>'+S.act.map(function(a,i){return '<div class="row" style="grid-template-columns:1fr 90px auto auto"><span><b>'+esc(a.n)+'</b> <small>'+esc(a.dur||'')+'</small></span><label>Alvos<input type="number" min="1" data-ai="'+i+'" value="'+(+a.al||1)+'"></label><button data-ak="'+i+'" title="Estende pela duração base: 1 PP por alvo">Manter (1 PP por alvo)</button><button data-ae="'+i+'">Encerrar</button></div>'}).join('')+'<p class="pt">Manter gasta 1 PP por alvo e estende o poder pela sua Duração base (livro, p. 177).</p></section>';
-h+='<section class="wide"><h2>Poderes</h2><div class="chips">'+S.pw.map(function(x,i){return '<div class="pwx"><button class="chip pwc" data-o="pw:'+i+'"><b>'+esc(x.n||'(sem nome)')+'</b><span>'+meta(x)+'</span></button><button class="no" data-cast="'+i+'" style="border-radius:10px">Conjurar</button></div>'}).join('')+'<button class="chip no" data-a="pw">+ Poder</button></div></section><section class="wide no" id="rh"></section>';
+var OPW={};
+function fmt(d){return String(d||'').split(/\n\s*\n/).map(function(t){return t.replace(/\s*\n\s*/g,' ').trim()}).filter(Boolean).map(function(t){return '<p>'+esc(t)+'</p>'}).join('')}
+function tg(t,c){return t?'<span class="tg'+(c?' '+c:'')+'">'+esc(t)+'</span>':''}
+function pwTags(x){return tg(x.pp?x.pp+' PP':'','pp')+tg(x.r)+tg(x.dur)+tg(x.dm?'Dano '+x.dm:'')+tg(+x.lim>0?'Limitações '+(+x.lim):'')}
+function pwItem(x,i){var mods=pmods(x),d=String(x.d||'').replace(/\s+/g,' ').trim();
+return '<details class="pw" data-pi="'+i+'"'+(OPW[i]?' open':'')+'><summary><span class="cv" aria-hidden="true"></span><span class="pwi"><b class="pwn">'+esc(x.n||'(sem nome)')+'</b><span class="tags">'+pwTags(x)+'</span>'+(d?'<span class="pre">'+esc(d)+'</span>':'')+'</span><button class="no cb" data-cast="'+i+'">Conjurar</button></summary><div class="pwb">'+(d?fmt(x.d):'<p class="pt"><i>Sem descrição ainda. Use Editar para adicionar.</i></p>')+(mods.length?'<div class="pwm"><b>Modificadores</b><ul class="pml">'+mods.map(function(m){return '<li><span>'+esc(m.n)+'</span><b>'+(m.c?'+'+m.c+' PP':'—')+'</b></li>'}).join('')+'</ul></div>':'')+'<div class="bt no"><button data-e="pw:'+i+'">Editar</button><button data-r="pw:'+i+'">Remover</button></div></div></details>'}
+function renderPw(){
+var h='<section class="wide"><h2>Pontos de Poder</h2><div class="g"><label>Atuais<input type="number" data-k="ppa" value="'+S.ppa+'"></label><label>Máximo<input type="number" data-k="ppm" value="'+S.ppm+'"></label><div class="bnb">Benes<b id="pwb">'+S.bn.a+'</b></div></div><div class="no pbt"><button data-pp5="1">Recuperar 5 PP (gasta 1 Bene)</button><button data-rest="1">Descanso de 1 hora (+5 PP)</button><button data-cast="-1">Conjurar truque</button></div></section>';
+if(S.act.length)h+='<section class="wide"><h2>Poderes ativos</h2>'+S.act.map(function(a,i){return '<div class="ac"><span class="an"><b>'+esc(a.n)+'</b><small>'+esc(a.dur||'')+'</small></span><label>Alvos<input type="number" min="1" data-ai="'+i+'" value="'+(+a.al||1)+'"></label><button data-ak="'+i+'" title="Estende pela duração base: 1 PP por alvo">Manter</button><button data-ae="'+i+'">Encerrar</button></div>'}).join('')+'<p class="pt" style="margin-top:8px">Manter gasta 1 PP por alvo e estende o poder pela sua Duração base (livro, p. 177).</p></section>';
+h+='<section class="wide"><div class="sh"><h2>Poderes</h2><button class="no" data-a="pw">+ Poder</button></div>'+(S.pw.length?'<div class="pl">'+S.pw.map(pwItem).join('')+'</div>':'<p class="pt">Nenhum poder ainda. Use “+ Poder” para adicionar o primeiro.</p>')+'</section><section class="wide no" id="rh"></section>';
 $('app').innerHTML=h}
 function ldCalc(){var el=$('ld');if(!el)return;var o=ovl(),L=peso(),M=lim();el.innerHTML='Carga: <b class="'+(o?'bad':'')+'">'+L+' kg</b> de '+M+' kg'+(o?' · <b class="bad">Sobrecarregado</b>: −2 em Movimentação, Agilidade e perícias de Agilidade':'')+(L>4*M?' · acima do máximo de '+4*M+' kg':'')}
 function totCu(){var m=S.money;return m.pl*1000+m.po*100+m.pp*10+m.pc}
@@ -258,14 +299,20 @@ function modal(h){if(!h)CB=null;$('md').innerHTML=h||'';$('ov').style.display=h?
 function cfm(msg,ok,fn){CB=fn;modal('<h2>Confirmar</h2><p>'+esc(msg)+'</p><div class="bt"><button data-cb="0">Cancelar</button><button data-cb="1" style="background:var(--red);color:#fff">'+esc(ok||'Confirmar')+'</button></div>');var b=$('md').querySelector('button');if(b)b.focus()}
 function ptx(title,val,fn){CB=fn;modal('<h2>'+esc(title)+'</h2><label>Nome<input id="pv" value="'+esc(val)+'"></label><div class="bt" style="margin-top:10px"><button data-cb="0">Cancelar</button><button data-cb="2" style="background:var(--red);color:#fff">Salvar</button></div>');$('pv').focus()}
 function show(k,i){var x=S[k][i];modal('<h2>'+esc(x.n)+'</h2>'+(k=='pw'?'<div class="pt">'+meta(x)+'</div>':'')+(k=='equip'?'<div class="pt">'+qn(x)+' un. · '+(x.w!==''&&x.w!=null?esc(x.w)+' kg cada':'sem peso')+(x.b?' · na mochila':'')+'</div>':'')+'<p>'+(x.d?esc(x.d):'<i>Sem descrição ainda. Use Editar para adicionar.</i>')+'</p><div class="bt">'+(k=='pw'?'<button data-cast="'+i+'" style="background:var(--red);color:#fff">Conjurar</button>':'')+'<button data-e="'+k+':'+i+'">Editar</button><button data-r="'+k+':'+i+'">Remover</button><button onclick="modal()">Fechar</button></div>')}
-function edit(k,i){var x=i<0?{n:'',d:'',pp:'',r:'',dur:''}:S[k][i];modal('<h2>'+(i<0?'Novo item':'Editar')+'</h2><label>Nome<input id="mn" value="'+esc(x.n)+'"></label>'+(k=='pw'?'<div class="g"><label>PP (custo base)<input id="mp" value="'+esc(x.pp)+'"></label><label>Alcance<input id="mr" value="'+esc(x.r)+'"></label><label>Duração<input id="mu" value="'+esc(x.dur)+'"></label></div><div class="g" style="margin-top:6px"><label>Perícia arcana<input id="ms" list="skl" value="'+esc(x.sk)+'" placeholder="Conjurar"></label><label>Dano (opcional)<input id="mdm" value="'+esc(x.dm)+'" placeholder="2d6"></label><label>Limitações<input id="ml" type="number" min="0" value="'+esc(x.lim)+'"></label></div><label style="margin-top:6px">Modificadores próprios (um por linha: Nome = custo)<textarea id="mmm" style="min-height:64px" placeholder="Alvo adicional = 1">'+esc(x.mm)+'</textarea></label>':'')+(k=='equip'?'<div class="g"><label>Peso (kg, cada)<input id="ew2" value="'+esc(x.w)+'"></label><label>Quantidade<input id="eq2" type="number" min="0" value="'+(i<0?1:qn(x))+'"></label><label class="ck" style="margin-top:18px"><input type="checkbox" id="eb2"'+(x.b?' checked':'')+'> Na mochila</label></div>':'')+'<label>Descrição completa<textarea id="md2">'+esc(x.d)+'</textarea></label><div class="bt" style="margin-top:10px"><button onclick="modal()">Cancelar</button><button data-p="'+k+':'+i+'" style="background:var(--red);color:#fff">Salvar</button></div>');$('mn').focus()}
-function put(k,i){var x={n:$('mn').value.trim(),d:$('md2').value};if(k=='pw'){x.pp=$('mp').value;x.r=$('mr').value;x.dur=$('mu').value;x.sk=$('ms').value.trim();x.dm=$('mdm').value.trim();x.lim=Math.max(0,Math.floor(+$('ml').value||0));x.mm=$('mmm').value}if(k=='equip'){x.w=$('ew2').value.trim();x.q=Math.max(0,+$('eq2').value||0);x.b=$('eb2').checked?1:0}if(!x.n){$('mn').focus();return}if(i<0)S[k].push(x);else S[k][i]=x;modal();go()}
-function rem(k,i){S[k].splice(i,1);modal();go()}
+function edit(k,i){var x=i<0?{n:'',d:'',pp:'',r:'',dur:''}:S[k][i];modal('<h2>'+(i<0?(k=='pw'?'Novo poder':'Novo item'):(k=='pw'?'Editar poder':'Editar'))+'</h2><label>Nome<input id="mn" value="'+esc(x.n)+'"></label>'+(k=='pw'?'<div class="g"><label>PP (custo base)<input id="mp" value="'+esc(x.pp)+'"></label><label>Alcance<input id="mr" value="'+esc(x.r)+'"></label><label>Duração<input id="mu" value="'+esc(x.dur)+'"></label></div><div class="g" style="margin-top:6px"><label>Perícia arcana<input id="ms" list="skl" value="'+esc(x.sk)+'" placeholder="Conjurar"></label><label>Dano (opcional)<input id="mdm" value="'+esc(x.dm)+'" placeholder="2d6"></label><label>Limitações<input id="ml" type="number" min="0" value="'+esc(x.lim)+'"></label></div>'+dfield(x,1)+'<div style="margin-top:12px"><b>Modificadores próprios</b><p class="pt">Um por linha da lista: nome e custo extra em PP (0 se não tiver custo). Textos longos quebram dentro do campo sem problema. Ficam prontos na hora de conjurar.</p><div id="mml">'+pmods(x).map(function(m){return mrow(m.n,m.c)}).join('')+'</div><button type="button" data-madd="1" style="margin-top:8px">+ Adicionar modificador</button></div>':'')+(k=='equip'?'<div class="g"><label>Peso (kg, cada)<input id="ew2" value="'+esc(x.w)+'"></label><label>Quantidade<input id="eq2" type="number" min="0" value="'+(i<0?1:qn(x))+'"></label><label class="ck" style="margin-top:18px"><input type="checkbox" id="eb2"'+(x.b?' checked':'')+'> Na mochila</label></div>':'')+''+(k=='pw'?'':dfield(x,0))+'<div class="bt" style="margin-top:12px"><button onclick="modal()">Cancelar</button><button data-p="'+k+':'+i+'" style="background:var(--red);color:#fff">Salvar</button></div>');Array.prototype.forEach.call($('md').querySelectorAll('.mrn'),ag);$('mn').focus()}
+function ag(el){el.style.height='auto';el.style.height=el.scrollHeight+'px'}
+function dfield(x,pw){return '<label style="margin-top:8px">Descrição completa<textarea id="md2" style="min-height:140px">'+esc(x.d)+'</textarea></label>'+(pw?'<button type="button" data-jl="1" style="margin-top:4px;font-size:.85rem" title="Remove as quebras de linha soltas e mantém os parágrafos (linhas em branco)">Juntar linhas quebradas</button>':'')}
+function mrow(n,c){return '<div class="mrow"><label>Modificador<textarea class="mrn" rows="1" oninput="ag(this)" placeholder="Ex.: Alvo adicional">'+esc(n)+'</textarea></label><label>PP<input class="mrc" type="number" min="0" value="'+(+c||0)+'"></label><button type="button" data-mdel="1" aria-label="Remover modificador" style="margin-top:18px">✕</button></div>'}
+function mAdd(){var l=$('mml');if(!l)return;l.insertAdjacentHTML('beforeend',mrow('',1));var t=l.querySelectorAll('.mrn');if(t.length){ag(t[t.length-1]);t[t.length-1].focus()}}
+function mmRead(){var o=[];Array.prototype.forEach.call(document.querySelectorAll('#md .mrow'),function(r){var n=r.querySelector('.mrn').value.replace(/\s*\n\s*/g,' ').trim(),c=Math.max(0,Math.floor(+r.querySelector('.mrc').value||0));if(n)o.push(n+' = '+c)});return o.join('\n')}
+function jl(){var t=$('md2');if(t)t.value=t.value.replace(/[ \t]+\n/g,'\n').replace(/([^\n])\n(?!\n)/g,'$1 ')}
+function put(k,i){var x={n:$('mn').value.trim(),d:$('md2').value};if(k=='pw'){x.pp=$('mp').value;x.r=$('mr').value;x.dur=$('mu').value;x.sk=$('ms').value.trim();x.dm=$('mdm').value.trim();x.lim=Math.max(0,Math.floor(+$('ml').value||0));x.mm=mmRead()}if(k=='equip'){x.w=$('ew2').value.trim();x.q=Math.max(0,+$('eq2').value||0);x.b=$('eb2').checked?1:0}if(!x.n){$('mn').focus();return}if(i<0)S[k].push(x);else S[k][i]=x;modal();go()}
+function rem(k,i){if(k=='pw')OPW={};S[k].splice(i,1);modal();go()}
 function go(){save();render()}
 function pip(k,i){S[k]=S[k]==i?i-1:i;go()}
 function del(k,i){S[k].splice(i,1);go()}
 /* ---------- eventos ---------- */
-document.addEventListener('click',function(e){var b=e.target.closest('[data-o],[data-a],[data-e],[data-r],[data-p],[data-d],[data-n],[data-ro],[data-rr],[data-rw],[data-rd],[data-lo],[data-ld],[data-lr],[data-lx],[data-cb],[data-abo],[data-abr],[data-abx],[data-aba],[data-rab],[data-bp],[data-bm],[data-ns],[data-pp5],[data-img],[data-cast],[data-ct],[data-cx],[data-cok],[data-ak],[data-ae],[data-rest],[data-bk],[data-xadd],[data-xdel],[data-mg],[data-mr],[data-rhx]');if(e.target==$('ov'))modal();if(!b)return;var d=b.dataset,p;
+document.addEventListener('click',function(e){var b=e.target.closest('[data-o],[data-a],[data-e],[data-r],[data-p],[data-d],[data-n],[data-ro],[data-rr],[data-rw],[data-rd],[data-lo],[data-ld],[data-lr],[data-lx],[data-cb],[data-abo],[data-abr],[data-abx],[data-aba],[data-rab],[data-bp],[data-bm],[data-ns],[data-pp5],[data-img],[data-cast],[data-ct],[data-cx],[data-cok],[data-ak],[data-ae],[data-rest],[data-bk],[data-xadd],[data-xdel],[data-madd],[data-mdel],[data-jl],[data-mg],[data-mr],[data-rhx]');if(e.target==$('ov'))modal();if(!b)return;var d=b.dataset,p;
 if(d.cb!==undefined){var f=CB,v=$('pv')?$('pv').value:null;CB=null;modal();if(d.cb!='0'&&f)f(v)}
 else if(d.o){p=d.o.split(':');show(p[0],+p[1])}else if(d.a)edit(d.a,-1);else if(d.e){p=d.e.split(':');edit(p[0],+p[1])}else if(d.r){p=d.r.split(':');rem(p[0],+p[1])}else if(d.p){p=d.p.split(':');put(p[0],+p[1])}else if(d.d){p=d.d.split(':');del(p[0],+p[1])}else if(d.n){S[d.n].push({n:'',w:'',b:0});go()}
 else if(d.rr)rerr();
@@ -284,7 +331,9 @@ else if(d.ak!==undefined)actKeep(+d.ak);else if(d.ae!==undefined)actEnd(+d.ae)
 else if(d.rest)rest1h();else if(d.bk)expAll()
 else if(d.rhx!==undefined){S.rh.splice(+d.rhx,1);save();paintRh()}
 else if(d.mg)moneyTx(-1);else if(d.mr)moneyTx(1)
-else if(d.xadd)xAdd();else if(d.xdel){var rw=b.closest('.cxr');if(rw)rw.remove();castCalc()}});
+else if(d.madd)mAdd();else if(d.mdel){var mrw=b.closest('.mrow');if(mrw)mrw.remove()}else if(d.jl)jl();else if(d.xadd)xAdd();else if(d.xdel){var rw=b.closest('.cxr');if(rw)rw.remove();castCalc()}});
+document.addEventListener('toggle',function(e){var t=e.target;if(t&&t.dataset&&t.dataset.pi!=null)OPW[t.dataset.pi]=t.open},true);
+document.addEventListener('keydown',function(e){var c=e.target.classList;if(e.key=='Enter'&&c&&(c.contains('mrn')||c.contains('cxn')))e.preventDefault()});
 document.addEventListener('keydown',function(e){if(e.key=='Escape')modal();else if(e.key=='Enter'&&e.target.id=='pv'){var b=document.querySelector('#md [data-cb="2"]');if(b)b.click()}});
 document.addEventListener('input',function(e){var t=e.target,k=t.dataset.k;if(t.hasAttribute('data-cc')){castCalc();return}
 if(k){S[k]=t.type=='checkbox'?(t.checked?1:0):t.type=='number'?(+t.value||0):t.value;save();calc();ldCalc()}
@@ -341,8 +390,8 @@ if(want)S.sk.forEach(function(s,k){if(f<0&&s.n.trim().toLowerCase()==want)f=k});
 if(f<0)['conjurar','fé','performance','ocultismo'].forEach(function(n){if(f<0)S.sk.forEach(function(s,k){if(f<0&&s.n.trim().toLowerCase()==n)f=k})});
 return f<0?0:f}
 function pmods(p){return String(p.mm||'').split(/\n/).map(function(t){return t.trim()}).filter(Boolean).map(function(t){var m=t.match(/^(.*?)\s*[=:(]\s*\+?(\d+)\s*\)?\s*$/);return m?{n:m[1]||t,c:+m[2]}:{n:t,c:0}})}
-function xrow(n,c,q,sv){return '<div class="g cxr" data-sv="'+(sv?1:0)+'" style="grid-template-columns:2fr 1fr 1fr auto;align-items:end;margin-top:4px"><label>Extra<input class="cxn" data-cc value="'+esc(n)+'" placeholder="Alvo adicional"></label><label>PP cada<input class="cxc" type="number" min="0" data-cc value="'+c+'"></label><label>Quantidade<input class="cxq" type="number" min="0" data-cc value="'+q+'"></label><button type="button" data-xdel="1" aria-label="Remover extra">✕</button></div>'}
-function xAdd(){var l=$('cxl');if(!l)return;l.insertAdjacentHTML('beforeend',xrow('',1,1,false));var n=l.querySelectorAll('.cxn');if(n.length)n[n.length-1].focus();castCalc()}
+function xrow(n,c,q,sv){return '<div class="g cxr" data-sv="'+(sv?1:0)+'" style="grid-template-columns:1fr 1fr auto;align-items:end;margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)"><label style="grid-column:1/-1">Extra<textarea class="cxn" rows="1" data-cc oninput="ag(this)" placeholder="Alvo adicional">'+esc(n)+'</textarea></label><label>PP cada<input class="cxc" type="number" min="0" data-cc value="'+c+'"></label><label>Quantidade<input class="cxq" type="number" min="0" data-cc value="'+q+'"></label><button type="button" data-xdel="1" aria-label="Remover extra">✕</button></div>'}
+function xAdd(){var l=$('cxl');if(!l)return;l.insertAdjacentHTML('beforeend',xrow('',1,1,false));var n=l.querySelectorAll('.cxn');if(n.length){ag(n[n.length-1]);n[n.length-1].focus()}castCalc()}
 function castOpen(i){
 if(!S.sk.length){tst('Adicione a perícia arcana (ex.: Conjurar) em Perícias antes de conjurar.');return}
 var trk=i<0,p=trk?{n:'Truque',pp:'0',r:'',dur:'',lim:0,mm:'',dm:'',sk:''}:S.pw[i];if(!p)return;
@@ -357,7 +406,7 @@ h+='<div class="g" style="margin-top:8px"><label>Distância<select id="cd" data-
 h+='<div id="cxl">'+pmods(p).map(function(m){return xrow(m.n,m.c,0,true)}).join('')+'</div><div class="no" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px"><button data-xadd="1">+ Adicionar extra</button><label class="ck"><input type="checkbox" id="cxs" checked> Guardar extras novos neste poder</label></div></details>';
 h+='<details style="margin-top:6px"><summary style="cursor:pointer;font-weight:700">Avançado</summary><div class="g" style="margin-top:6px"><label>Limitações<input id="cl" type="number" min="0" data-cc value="'+(+p.lim||0)+'"></label><label>PP livres (outros custos)<input id="cx" type="number" min="0" data-cc value="0"></label><label>Reduzir o custo em (PP)<input id="cr" type="number" min="0" data-cc value="0"></label><label>Resistência do alvo<input id="ct" type="number" data-cc></label></div><label class="ck" style="margin-top:6px"><input type="checkbox" id="ctk" data-cc> Conjurar como truque (sem custo e sem dano)</label></details>'}
 h+='<p class="pt" id="cprev" style="margin-top:8px"></p><div class="bt"><button data-cb="0">Cancelar</button><button data-ct="1" style="background:var(--red);color:#fff">Rolar</button></div>';
-modal(h);castCalc()}
+modal(h);Array.prototype.forEach.call($('md').querySelectorAll('.cxn'),ag);castCalc()}
 function castRead(){var g=function(id){var e=$(id);return e?(+e.value||0):0},mods=[],nw=[],mc=0,ck=!!(CAST&&CAST.trk)||!!($('ctk')&&$('ctk').checked);
 Array.prototype.forEach.call($('md').querySelectorAll('.cm'),function(e){if(e.checked){mods.push(e.getAttribute('data-mn'));mc+=+e.getAttribute('data-c')||0}});
 Array.prototype.forEach.call($('md').querySelectorAll('.cxr'),function(r){var n=(r.querySelector('.cxn').value||'').trim(),c=+r.querySelector('.cxc').value||0,q=+r.querySelector('.cxq').value||0;if(q>0&&c>=0){mc+=c*q;mods.push((n||'Extra')+(q>1?' ×'+q:'')+' (+'+c*q+')')}if(r.getAttribute('data-sv')!='1'&&n)nw.push({n:n,c:c})});
