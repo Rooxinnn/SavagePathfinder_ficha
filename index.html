@@ -63,6 +63,9 @@ label{display:block;font-size:.85rem;color:var(--mut)}
 .th span{font:800 3rem Cinzel,serif;color:var(--brass)}
 .fi{display:flex;flex-direction:column}.fi b{font-family:Cinzel,Georgia,serif}.fi span{font-size:.9rem;color:var(--mut)}
 .fa{display:flex;flex-wrap:wrap;gap:6px}.fa button{font-size:.85rem;padding:4px 8px}
+.pwx{display:flex;gap:4px;align-items:stretch}
+.mods{display:grid;gap:4px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.ck{display:flex;gap:6px;align-items:center;color:var(--ink);font-size:.9rem}.ck input{width:auto}
 @media print{header,.no,#roll,#toast,#ov,#lobby,.tabs,.por .ph{display:none}body{background:#fff}main{display:block}section{break-inside:avoid;margin-bottom:8px}button{display:none}.pip{display:inline-block}}
 </style>
 </head>
@@ -90,7 +93,7 @@ label{display:block;font-size:.85rem;color:var(--mut)}
   <input id="fi" type="file" accept="image/*" hidden>
 </header>
 <div id="nost" class="no" hidden style="margin:0;padding:8px 16px;background:#7a5a10;color:#fff;font-size:.9rem;display:flex;gap:12px;align-items:center;justify-content:space-between"><span id="nostt"></span><button onclick="closeBanner()" aria-label="Fechar aviso" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.4);flex:none">✕</button></div>
-<nav class="tabs no" id="tabs" hidden><button id="t1" class="on" onclick="tab('ficha')">Ficha</button><button id="t2" onclick="tab('pw')">Poderes</button></nav>
+<nav class="tabs no" id="tabs" hidden><button id="t1" class="on" onclick="tab('ficha')">Ficha</button><button id="t3" onclick="tab('eq')">Equipamento</button><button id="t2" onclick="tab('pw')">Poderes</button></nav>
 <main id="lobby" class="lobby"></main>
 <main id="app" hidden></main>
 <datalist id="skl"></datalist><div id="ov"><div id="md" role="dialog" aria-modal="true"></div></div>
@@ -145,14 +148,15 @@ for(var i=0;i<IDX.length;i++)if(IDX[i].id==CUR){var m=IDX[i];if(m.nome!=(S.nome|
 IDX.unshift(metaOf(CUR,S));saveIdx()}
 function usage(){var n=0;lsKeys().forEach(function(k){if(k&&k.indexOf(KEY)==0)n+=k.length+(rd(k)||'').length});return Math.round(n*2/1024)}
 /* ---------- ficha em branco e migração ---------- */
-function blank(){return{nome:'',anc:'',classe:'',alt:'',peso:'',bn:{a:3,i:3,h:[]},ab:0,conv:'',pace:6,armor:0,pb:0,tb:0,
+function blank(){return{nome:'',anc:'',classe:'',alt:'',peso:'',bn:{a:3,i:3,h:[]},ab:0,rh:[],act:[],money:{pl:0,po:300,pp:0,pc:0},conv:'',pace:6,armor:0,pb:0,tb:0,
 freeA:0,v:2,prog:0,tam:0,fb:0,idi:'',availA:5,availS:12,att:{agi:1,ast:1,esp:1,for:1,vig:1},
 sk:[['Atirar','agi',0,0],['Atletismo','agi',1,1],['Cavalgar','agi',0,0],['Ciência','ast',0,0],['Conhecimento Acadêmico','ast',0,0],['Conhecimento Batalha','ast',0,0],['Conhecimento Geral','ast',1,1],['Conjurar','ast',0,0],['Consertar','ast',0,0],['Curar','ast',0,0],['Dirigir','agi',0,0],['Fé','esp',0,0],['Furtividade','agi',1,1],['Intimidar','esp',0,0],['Ladinagem','agi',0,0],['Lutar','agi',0,0],['Navegar','agi',0,0],['Ocultismo','ast',0,0],['Perceber','ast',1,1],['Performance','esp',0,0],['Persuadir','esp',1,1],['Pilotar','agi',0,0],['Provocar','ast',0,0],['Sobrevivência','ast',0,0]].filter(function(a){return a[3]}).map(function(a){return{n:a[0],a:a[1],l:a[2],c:a[3]}}),
 comp:[],anc_h:[],edges:[],pw:[],ppa:0,ppm:0,equip:[],wp:[],ferm:0,fad:0,inc:0}}
 function mig(j){['comp','anc_h','edges'].forEach(function(k){var v=j[k];if(typeof v=='string')v=v.split(/\n| · /).map(function(t){return t.trim()}).filter(Boolean).map(function(t){return{n:t,d:''}});j[k]=Array.isArray(v)?v:[]});if(!Array.isArray(j.pw))j.pw=[];j.ppa=j.ppa||0;j.ppm=j.ppm||0;if(typeof j.equip=='string')j.equip=j.equip.split(/\n/).map(function(t){return t.trim()}).filter(Boolean).map(function(t){return{n:t,w:'',b:0}});if(!Array.isArray(j.equip))j.equip=[];if(!j.v){if(j.availS==15)j.availS=12;j.v=2};['prog','tam','fb'].forEach(function(k){j[k]=j[k]||0});j.idi=j.idi||'';
 if(!j.bn||typeof j.bn!='object'){var m=String(j.benes==null?'3':j.benes).match(/\d+/g),n=m?m.reduce(function(a,b){return a+(+b)},0):3;if(n>20)n=3;j.bn={a:n,i:n,h:[]}}
 var ba=Math.floor(+j.bn.a),bi=Math.floor(+j.bn.i);if(isNaN(bi))bi=3;if(isNaN(ba))ba=bi;j.bn.a=Math.max(0,ba);j.bn.i=Math.max(0,bi);if(!Array.isArray(j.bn.h))j.bn.h=[];
-delete j.benes;j.ab=j.ab?1:0;if(!j.att)j.att={agi:1,ast:1,esp:1,for:1,vig:1};if(!Array.isArray(j.sk))j.sk=[];if(!Array.isArray(j.wp))j.wp=[];j.ferm=j.ferm||0;j.fad=j.fad||0;return j}
+delete j.benes;j.ab=j.ab?1:0;if(!Array.isArray(j.rh))j.rh=[];if(!Array.isArray(j.act))j.act=[];
+if(!j.money||typeof j.money!='object')j.money={pl:0,po:0,pp:0,pc:0};['pl','po','pp','pc'].forEach(function(k){j.money[k]=Math.max(0,Math.floor(+j.money[k])||0)});j.equip.forEach(function(q){if(q.d==null)q.d='';if(q.q==null||q.q==='')q.q=1});if(!j.att)j.att={agi:1,ast:1,esp:1,for:1,vig:1};if(!Array.isArray(j.sk))j.sk=[];if(!Array.isArray(j.wp))j.wp=[];j.ferm=j.ferm||0;j.fad=j.fad||0;return j}
 function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
 function opts(from,sel){var o='';for(var i=from;i<=5;i++)o+='<option value="'+i+'"'+(i==sel?' selected':'')+'>'+D[i]+'</option>';return o}
 function fld(k,lbl,t){return '<label>'+lbl+'<input data-k="'+k+'" value="'+esc(S[k])+'"'+(t?' type="'+t+'"':'')+'></label>'}
@@ -175,7 +179,7 @@ function rab(){if(!S.ab){tst('A personagem não está Abalada.');return}if(!spen
 function absRed(r){return r.crit?0:(r.tot>=4?1+Math.floor((r.tot-4)/4):0)}
 function absOpen(){if(S.bn.a<1){tst('Sem Benes! Não dá para fazer a Absorção.');return}AB=null;
 modal('<h2>Rolagem de Absorção</h2><p>Depois do dano e antes de aplicar os Ferimentos, gasta 1 Bene e faz um teste de Vigor. Cada sucesso e cada ampliação anula 1 Ferimento (máximo de 4 por ataque).</p><label>Ferimentos que você ia sofrer<input id="abw" type="number" min="1" max="4" value="1"></label><div class="bt" style="margin-top:10px"><button data-cb="0">Cancelar</button><button data-abr="1" style="background:var(--red);color:#fff">Rolar Vigor (gasta 1 Bene)</button></div>');$('abw').focus()}
-function absRoll(){var w=Math.max(1,Math.min(4,Math.floor(+$('abw').value)||1));if(!spend('Absorção ('+w+' ferimento'+(w>1?'s':'')+')')){modal();return}AB={w:w,r:rl(S.att.vig,0,'vig','Vigor')};absShow()}
+function absRoll(){var w=Math.max(1,Math.min(4,Math.floor(+$('abw').value)||1));if(!spend('Absorção ('+w+' ferimento'+(w>1?'s':'')+')')){modal();return}AB={w:w,r:rl(S.att.vig,0,'vig','Vigor')};lg('Absorção: Vigor '+(AB.r.crit?'falha crítica':AB.r.tot));absShow()}
 function absShow(note){var r=AB.r,red=Math.min(AB.w,absRed(r)),rem=AB.w-red;
 modal('<h2>Absorção</h2><p><b style="font-size:1.4rem">'+(r.crit?'—':r.tot)+'</b> no Vigor<br><small>'+rdet(r)+(note?' · '+esc(note):'')+'</small></p><p>'+(r.crit?'Falha crítica! Nenhum Ferimento absorvido e não pode rerrolar. ':'Absorveu <b>'+red+'</b> de '+AB.w+' Ferimento'+(AB.w>1?'s':'')+'. ')+(rem?'Restam <b>'+rem+'</b>.':'<b>Todos absorvidos.</b> O estado Abalado também será removido.')+'</p><div class="bt">'+(r.crit?'':'<button data-abx="1">Rerrolar Vigor (1 Bene · restam '+S.bn.a+')</button>')+'<button data-aba="1" style="background:var(--red);color:#fff">Aplicar na ficha</button><button onclick="modal()">Fechar sem aplicar</button></div>')}
 function absRe(){var o=AB.r;if(o.crit)return;if(!spend('rerrolou Absorção'))return;var n=rl(S.att.vig,0,'vig','Vigor');if(n.crit){AB.r=n;absShow('a rerrolagem foi falha crítica');return}if(n.tot>o.tot){AB.r=n;absShow('rerrolagem melhor: mantida')}else absShow('rerrolagem pior: vale o total anterior')}
@@ -184,7 +188,9 @@ if(rem==0){S.ab=0;msg='Tudo absorvido. Abalado removido.'}
 else{if(S.ferm+rem>3){S.ferm=3;S.inc=1;msg='Ferimentos demais: marcado como Incapacitado.'}else{S.ferm+=rem;msg='+'+rem+' Ferimento'+(rem>1?'s':'')+' na ficha. Marcado como Abalado.'}S.ab=1}
 AB=null;modal();go();tst(msg)}
 /* ---------- renderização da ficha ---------- */
-function render(){if(TAB=='pw')renderPw();else renderFicha();paintBn()}
+var PBUF=null;
+function out(h){if(PBUF!==null)PBUF+=h;else $('app').innerHTML=h}
+function render(){if(TAB=='pw')renderPw();else if(TAB=='eq')renderEq();else renderFicha();paintBn();paintRh()}
 function renderFicha(){
 var h='<section class="wide"><h2>Identidade</h2><div class="idw"><div class="por">'+(IMGD?'<img src="'+IMGD+'" alt="Retrato do personagem">':'<div class="ph">Sem imagem</div>')+'<div class="no" style="display:flex;flex-direction:column;gap:4px"><button data-img="pick">'+(IMGD?'Trocar imagem':'Escolher imagem')+'</button><button data-img="paste">Colar imagem</button>'+(IMGD?'<button data-img="del">Remover imagem</button>':'')+'</div></div><div><div class="gi">'+fld('nome','Nome')+fld('anc','Ancestralidade')+fld('classe','Classe')+fld('alt','Altura (m)')+fld('peso','Peso')+fld('conv','Convicção')+fld('prog','Progressos','number')+'<label>Estágio<input id="stg" readonly></label>'+fld('tam','Tamanho','number')+fld('idi','Idiomas')+'</div><p class="pt" id="ih"></p></div></div></section>';
 h+='<section><h2>Atributos</h2><p class="pt" id="pa"></p>';
@@ -203,10 +209,7 @@ h+=lst('comp','Complicações')+lst('anc_h','Habilidades ancestrais')+lst('edges
 h+='<section class="wide"><h2>Armas</h2><div class="g" style="margin-bottom:8px"><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="rz" style="width:auto"> Ampliação no ataque (+d6 de dano)</label><label>Resistência do alvo (opcional)<input type="number" id="rt"></label></div><div class="w h"><span>Arma</span><span>Distância</span><span>Dano</span><span>PA</span><span>CdT</span><span>Peso</span><span></span></div>';
 S.wp.forEach(function(w,i){h+='<div class="w">'+['n','r','d','pa','rof','w'].map(function(f){return '<input data-wi="'+i+'" data-f="'+f+'" value="'+esc(w[f])+'">'}).join('')+'<button data-rw="'+i+'" aria-label="Rolar dano">🎲</button><button class="x" onclick="del(\'wp\','+i+')" aria-label="Remover">✕</button></div>'});
 h+='<button class="no" onclick="S.wp.push({n:\'\',r:\'\',d:\'\',pa:\'\',rof:\'1\',w:\'\'});go()">+ Arma</button></section>';
-h+='<section class="wide"><h2>Equipamento e carga</h2><p class="pt" id="ld"></p><div class="w h" style="grid-template-columns:2.5fr .8fr .7fr 30px"><span>Item</span><span>Peso (kg)</span><span>Na mochila</span><span></span></div>';
-S.equip.forEach(function(q,i){h+='<div class="w" style="grid-template-columns:2.5fr .8fr .7fr 30px"><input data-ei="'+i+'" data-f="n" value="'+esc(q.n)+'"><input data-ei="'+i+'" data-f="w" inputmode="decimal" value="'+esc(q.w)+'"><label style="display:flex;align-items:center"><input type="checkbox" style="width:auto" data-ei="'+i+'" data-f="b"'+(q.b?' checked':'')+'></label><button class="x" data-d="equip:'+i+'" aria-label="Remover">✕</button></div>'});
-h+='<button class="no" data-n="equip">+ Item</button><label style="margin-top:8px;display:flex;gap:6px;align-items:center"><input type="checkbox" style="width:auto" data-k="fb"'+(S.fb?' checked':'')+'> Força conta como um dado maior (anão, Resistente)</label><p class="pt">Itens marcados como “na mochila” contam metade do peso. Inclua armas e armaduras na lista; dinheiro e itens sem peso ficam com o peso em branco.</p></section>';
-$('app').innerHTML=h;calc()}
+h+='<section class="wide no" id="rh"></section>';out(h);if(PBUF===null)calc()}
 function calc(){
 if(!document.getElementById('pa'))return;var sp=0,ap=0,fight=0;
 AT.forEach(function(a){ap+=S.att[a[0]]-1});ap-=S.freeA;
@@ -216,29 +219,53 @@ document.getElementById('pa').innerHTML='Restam <b class="'+(ra<0?'bad':'')+'">'
 document.getElementById('ps').innerHTML='Restam <b class="'+(rs<0?'bad':'')+'">'+rs+'</b> de '+S.availS+' pontos · perícias acima do atributo custam 2';
 $('dp').textContent=2+(fight?fight+1:0)+(+S.pb||0);
 $('dt').textContent=(2+S.att.vig+1+(+S.tam||0)+(+S.armor||0)+(+S.tb||0))+(S.armor?' ('+S.armor+')':'');
-var o=ovl(),mv=Math.max(1,(+S.pace||0)-S.ferm-(o?2:0)),L=peso(),M=lim();
+var o=ovl(),mv=Math.max(1,(+S.pace||0)-S.ferm-(o?2:0));
 $('mv').innerHTML='Movimentação atual: <b>'+mv+'</b>'+(S.ferm?' (−'+S.ferm+' por ferimentos)':'')+(o?' (−2 por sobrecarga)':'');
-$('ld').innerHTML='Carga: <b class="'+(o?'bad':'')+'">'+L+' kg</b> de '+M+' kg'+(o?' · <b class="bad">Sobrecarregado</b>: −2 em Movimentação, Agilidade e perícias de Agilidade':'')+(L>4*M?' · acima do máximo de '+4*M+' kg':'');
 $('stg').value=est(S.prog);
 $('ih').textContent='Idiomas extras: '+(S.att.ast+1)+' (além de Comum)';
 var p=S.ferm+S.fad;document.getElementById('pen').textContent=p?'Penalidade total: −'+p:''}
 function lst(k,t){return '<section class="wide"><h2>'+t+'</h2><div class="chips">'+S[k].map(function(x,i){return '<button class="chip" data-o="'+k+':'+i+'">'+esc(x.n||'(sem nome)')+'</button>'}).join('')+'<button class="chip no" data-a="'+k+'">+ Adicionar</button></div></section>'}
 function meta(x){return [x.pp?x.pp+' PP':'',x.r,x.dur].filter(Boolean).map(esc).join(' · ')}
-function renderPw(){$('app').innerHTML='<section class="wide"><h2>Pontos de Poder</h2><div class="g"><label>Atuais<input type="number" data-k="ppa" value="'+S.ppa+'"></label><label>Máximo<input type="number" data-k="ppm" value="'+S.ppm+'"></label></div><div class="no" style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button data-pp5="1">Recuperar 5 PP (gasta 1 Bene)</button><span class="pt" style="margin:0">Benes: <b id="pwb">'+S.bn.a+'</b></span></div></section><section class="wide"><h2>Poderes</h2><div class="chips">'+S.pw.map(function(x,i){return '<button class="chip pwc" data-o="pw:'+i+'"><b>'+esc(x.n||'(sem nome)')+'</b><span>'+meta(x)+'</span></button>'}).join('')+'<button class="chip no" data-a="pw">+ Poder</button></div></section>'}
-function tab(t){TAB=t;$('t1').className=t=='ficha'?'on':'';$('t2').className=t=='pw'?'on':'';render()}
+function renderPw(){var h='<section class="wide"><h2>Pontos de Poder</h2><div class="g"><label>Atuais<input type="number" data-k="ppa" value="'+S.ppa+'"></label><label>Máximo<input type="number" data-k="ppm" value="'+S.ppm+'"></label></div><div class="no" style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button data-pp5="1">Recuperar 5 PP (gasta 1 Bene)</button><button data-rest="1">Descanso de 1 hora (+5 PP)</button><button data-cast="-1">Conjurar truque</button><span class="pt" style="margin:0">Benes: <b id="pwb">'+S.bn.a+'</b></span></div></section>';
+if(S.act.length)h+='<section class="wide"><h2>Poderes ativos</h2>'+S.act.map(function(a,i){return '<div class="row" style="grid-template-columns:1fr 90px auto auto"><span><b>'+esc(a.n)+'</b> <small>'+esc(a.dur||'')+'</small></span><label>Alvos<input type="number" min="1" data-ai="'+i+'" value="'+(+a.al||1)+'"></label><button data-ak="'+i+'" title="Estende pela duração base: 1 PP por alvo">Manter (1 PP por alvo)</button><button data-ae="'+i+'">Encerrar</button></div>'}).join('')+'<p class="pt">Manter gasta 1 PP por alvo e estende o poder pela sua Duração base (livro, p. 177).</p></section>';
+h+='<section class="wide"><h2>Poderes</h2><div class="chips">'+S.pw.map(function(x,i){return '<div class="pwx"><button class="chip pwc" data-o="pw:'+i+'"><b>'+esc(x.n||'(sem nome)')+'</b><span>'+meta(x)+'</span></button><button class="no" data-cast="'+i+'" style="border-radius:10px">Conjurar</button></div>'}).join('')+'<button class="chip no" data-a="pw">+ Poder</button></div></section><section class="wide no" id="rh"></section>';
+$('app').innerHTML=h}
+function ldCalc(){var el=$('ld');if(!el)return;var o=ovl(),L=peso(),M=lim();el.innerHTML='Carga: <b class="'+(o?'bad':'')+'">'+L+' kg</b> de '+M+' kg'+(o?' · <b class="bad">Sobrecarregado</b>: −2 em Movimentação, Agilidade e perícias de Agilidade':'')+(L>4*M?' · acima do máximo de '+4*M+' kg':'')}
+function totCu(){var m=S.money;return m.pl*1000+m.po*100+m.pp*10+m.pc}
+function breakCu(cu){return{pl:Math.floor(cu/1000),po:Math.floor(cu%1000/100),pp:Math.floor(cu%100/10),pc:cu%10}}
+function moneyPaint(){var el=$('mt');if(!el||!S)return;var cu=totCu();el.innerHTML='Total: <b>'+(cu/100).toLocaleString('pt-BR',{maximumFractionDigits:2})+' po</b> <small>('+cu+' pc)</small>'}
+function moneyTx(sg){var u=$('mu2').value,f={pc:1,pp:10,po:100,pl:1000}[u],v=parseFloat(String($('mv2').value).replace(',','.'));if(!(v>0)){tst('Informe um valor.');return}
+var cu=Math.round(v*f),tot=totCu(),re=false;
+if(sg<0){if(cu>tot){tst('Dinheiro insuficiente.');return}
+var V=[['pc',1],['pp',10],['po',100],['pl',1000]],ix=0,need=cu,m={pl:S.money.pl,po:S.money.po,pp:S.money.pp,pc:S.money.pc};
+V.forEach(function(x,i){if(x[0]==u)ix=i});
+function use(i){var k=V[i][0],t=Math.min(m[k],Math.floor(need/V[i][1]));m[k]-=t;need-=t*V[i][1]}
+use(ix);for(var i=ix-1;i>=0;i--)use(i);
+for(var j=ix+1;j<4&&need>0;j++){while(m[V[j][0]]>0&&need>0){m[V[j][0]]--;need-=V[j][1];re=true}}
+if(need<0){var ch=breakCu(-need);['pl','po','pp','pc'].forEach(function(k){m[k]+=ch[k]})}
+S.money=m}
+else{var b=breakCu(cu);['pl','po','pp','pc'].forEach(function(k){S.money[k]+=b[k]})}
+save();renderEq();tst((sg<0?'Gastou ':'Recebeu ')+v+' '+u+(re?'. O troco voltou em moedas menores.':'.'))}
+function renderEq(){
+var h='<section class="wide"><h2>Dinheiro</h2><div class="g">'+[['pl','Platina (pl)'],['po','Ouro (po)'],['pp','Prata (pp)'],['pc','Cobre (pc)']].map(function(c){return '<label>'+c[1]+'<input type="number" min="0" data-mo="'+c[0]+'" value="'+(S.money[c[0]]||0)+'"></label>'}).join('')+'</div><p class="pt" id="mt" style="margin-top:6px"></p><div class="no" style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap"><label style="width:110px">Valor<input id="mv2" type="number" min="0" step="any"></label><label style="width:90px">Moeda<select id="mu2"><option value="pl">pl</option><option value="po" selected>po</option><option value="pp">pp</option><option value="pc">pc</option></select></label><button data-mg="1">Gastar</button><button data-mr="1">Receber</button></div><p class="pt no" style="margin-top:6px">1 po = 10 pp = 100 pc; 1 pl = 10 po (livro, p. 109). Se faltar a moeda usada, a ficha quebra uma moeda maior e devolve o troco.</p></section>';
+h+='<section class="wide"><h2>Itens</h2><p class="pt" id="ld"></p><div class="w h" style="grid-template-columns:2fr 64px 76px 44px 30px"><span>Item</span><span>Qtd.</span><span>Peso</span><span>Mochila</span><span></span></div>';
+S.equip.forEach(function(q,i){var d=String(q.d||'');h+='<div class="w" style="grid-template-columns:2fr 64px 76px 44px 30px;align-items:center"><button class="nm" data-o="equip:'+i+'">'+esc(q.n||'(sem nome)')+(d?'<br><small style="font-weight:400;color:var(--mut)">'+esc(d.length>70?d.slice(0,70)+'…':d)+'</small>':'')+'</button><input type="number" min="0" data-ei="'+i+'" data-f="q" value="'+qn(q)+'" aria-label="Quantidade"><span id="ew'+i+'">'+itW(q)+' kg</span><label style="display:flex;justify-content:center"><input type="checkbox" style="width:auto" data-ei="'+i+'" data-f="b"'+(q.b?' checked':'')+' aria-label="Na mochila"></label><button class="x no" data-d="equip:'+i+'" aria-label="Remover">✕</button></div>'});
+h+='<button class="no" data-a="equip" style="margin-top:6px">+ Item</button><label style="margin-top:8px;display:flex;gap:6px;align-items:center"><input type="checkbox" style="width:auto" data-k="fb"'+(S.fb?' checked':'')+'> Força conta como um dado maior (anão, Resistente)</label><p class="pt">Clique no nome para ver ou editar a descrição. O peso é por unidade e itens “na mochila” contam metade. Dinheiro e itens sem peso ficam com o peso em branco.</p></section>';
+out(h);if(PBUF===null){ldCalc();moneyPaint()}}
+function tab(t){TAB=t;$('t1').className=t=='ficha'?'on':'';$('t2').className=t=='pw'?'on':'';$('t3').className=t=='eq'?'on':'';render()}
 /* ---------- janelas (modal, confirmar, texto) ---------- */
 function modal(h){if(!h)CB=null;$('md').innerHTML=h||'';$('ov').style.display=h?'flex':'none'}
 function cfm(msg,ok,fn){CB=fn;modal('<h2>Confirmar</h2><p>'+esc(msg)+'</p><div class="bt"><button data-cb="0">Cancelar</button><button data-cb="1" style="background:var(--red);color:#fff">'+esc(ok||'Confirmar')+'</button></div>');var b=$('md').querySelector('button');if(b)b.focus()}
 function ptx(title,val,fn){CB=fn;modal('<h2>'+esc(title)+'</h2><label>Nome<input id="pv" value="'+esc(val)+'"></label><div class="bt" style="margin-top:10px"><button data-cb="0">Cancelar</button><button data-cb="2" style="background:var(--red);color:#fff">Salvar</button></div>');$('pv').focus()}
-function show(k,i){var x=S[k][i];modal('<h2>'+esc(x.n)+'</h2>'+(k=='pw'?'<div class="pt">'+meta(x)+'</div>':'')+'<p>'+(x.d?esc(x.d):'<i>Sem descrição ainda. Use Editar para adicionar.</i>')+'</p><div class="bt"><button data-e="'+k+':'+i+'">Editar</button><button data-r="'+k+':'+i+'">Remover</button><button onclick="modal()">Fechar</button></div>')}
-function edit(k,i){var x=i<0?{n:'',d:'',pp:'',r:'',dur:''}:S[k][i];modal('<h2>'+(i<0?'Novo item':'Editar')+'</h2><label>Nome<input id="mn" value="'+esc(x.n)+'"></label>'+(k=='pw'?'<div class="g"><label>PP<input id="mp" value="'+esc(x.pp)+'"></label><label>Alcance<input id="mr" value="'+esc(x.r)+'"></label><label>Duração<input id="mu" value="'+esc(x.dur)+'"></label></div>':'')+'<label>Descrição completa<textarea id="md2">'+esc(x.d)+'</textarea></label><div class="bt" style="margin-top:10px"><button onclick="modal()">Cancelar</button><button data-p="'+k+':'+i+'" style="background:var(--red);color:#fff">Salvar</button></div>');$('mn').focus()}
-function put(k,i){var x={n:$('mn').value.trim(),d:$('md2').value};if(k=='pw'){x.pp=$('mp').value;x.r=$('mr').value;x.dur=$('mu').value}if(!x.n){$('mn').focus();return}if(i<0)S[k].push(x);else S[k][i]=x;modal();go()}
+function show(k,i){var x=S[k][i];modal('<h2>'+esc(x.n)+'</h2>'+(k=='pw'?'<div class="pt">'+meta(x)+'</div>':'')+(k=='equip'?'<div class="pt">'+qn(x)+' un. · '+(x.w!==''&&x.w!=null?esc(x.w)+' kg cada':'sem peso')+(x.b?' · na mochila':'')+'</div>':'')+'<p>'+(x.d?esc(x.d):'<i>Sem descrição ainda. Use Editar para adicionar.</i>')+'</p><div class="bt">'+(k=='pw'?'<button data-cast="'+i+'" style="background:var(--red);color:#fff">Conjurar</button>':'')+'<button data-e="'+k+':'+i+'">Editar</button><button data-r="'+k+':'+i+'">Remover</button><button onclick="modal()">Fechar</button></div>')}
+function edit(k,i){var x=i<0?{n:'',d:'',pp:'',r:'',dur:''}:S[k][i];modal('<h2>'+(i<0?'Novo item':'Editar')+'</h2><label>Nome<input id="mn" value="'+esc(x.n)+'"></label>'+(k=='pw'?'<div class="g"><label>PP (custo base)<input id="mp" value="'+esc(x.pp)+'"></label><label>Alcance<input id="mr" value="'+esc(x.r)+'"></label><label>Duração<input id="mu" value="'+esc(x.dur)+'"></label></div><div class="g" style="margin-top:6px"><label>Perícia arcana<input id="ms" list="skl" value="'+esc(x.sk)+'" placeholder="Conjurar"></label><label>Dano (opcional)<input id="mdm" value="'+esc(x.dm)+'" placeholder="2d6"></label><label>Limitações<input id="ml" type="number" min="0" value="'+esc(x.lim)+'"></label></div><label style="margin-top:6px">Modificadores próprios (um por linha: Nome = custo)<textarea id="mmm" style="min-height:64px" placeholder="Alvo adicional = 1">'+esc(x.mm)+'</textarea></label>':'')+(k=='equip'?'<div class="g"><label>Peso (kg, cada)<input id="ew2" value="'+esc(x.w)+'"></label><label>Quantidade<input id="eq2" type="number" min="0" value="'+(i<0?1:qn(x))+'"></label><label class="ck" style="margin-top:18px"><input type="checkbox" id="eb2"'+(x.b?' checked':'')+'> Na mochila</label></div>':'')+'<label>Descrição completa<textarea id="md2">'+esc(x.d)+'</textarea></label><div class="bt" style="margin-top:10px"><button onclick="modal()">Cancelar</button><button data-p="'+k+':'+i+'" style="background:var(--red);color:#fff">Salvar</button></div>');$('mn').focus()}
+function put(k,i){var x={n:$('mn').value.trim(),d:$('md2').value};if(k=='pw'){x.pp=$('mp').value;x.r=$('mr').value;x.dur=$('mu').value;x.sk=$('ms').value.trim();x.dm=$('mdm').value.trim();x.lim=Math.max(0,Math.floor(+$('ml').value||0));x.mm=$('mmm').value}if(k=='equip'){x.w=$('ew2').value.trim();x.q=Math.max(0,+$('eq2').value||0);x.b=$('eb2').checked?1:0}if(!x.n){$('mn').focus();return}if(i<0)S[k].push(x);else S[k][i]=x;modal();go()}
 function rem(k,i){S[k].splice(i,1);modal();go()}
 function go(){save();render()}
 function pip(k,i){S[k]=S[k]==i?i-1:i;go()}
 function del(k,i){S[k].splice(i,1);go()}
 /* ---------- eventos ---------- */
-document.addEventListener('click',function(e){var b=e.target.closest('[data-o],[data-a],[data-e],[data-r],[data-p],[data-d],[data-n],[data-ro],[data-rr],[data-rw],[data-rd],[data-lo],[data-ld],[data-lr],[data-lx],[data-cb],[data-abo],[data-abr],[data-abx],[data-aba],[data-rab],[data-bp],[data-bm],[data-ns],[data-pp5],[data-img]');if(e.target==$('ov'))modal();if(!b)return;var d=b.dataset,p;
+document.addEventListener('click',function(e){var b=e.target.closest('[data-o],[data-a],[data-e],[data-r],[data-p],[data-d],[data-n],[data-ro],[data-rr],[data-rw],[data-rd],[data-lo],[data-ld],[data-lr],[data-lx],[data-cb],[data-abo],[data-abr],[data-abx],[data-aba],[data-rab],[data-bp],[data-bm],[data-ns],[data-pp5],[data-img],[data-cast],[data-ct],[data-cx],[data-cok],[data-ak],[data-ae],[data-rest],[data-bk],[data-xadd],[data-xdel],[data-mg],[data-mr],[data-rhx]');if(e.target==$('ov'))modal();if(!b)return;var d=b.dataset,p;
 if(d.cb!==undefined){var f=CB,v=$('pv')?$('pv').value:null;CB=null;modal();if(d.cb!='0'&&f)f(v)}
 else if(d.o){p=d.o.split(':');show(p[0],+p[1])}else if(d.a)edit(d.a,-1);else if(d.e){p=d.e.split(':');edit(p[0],+p[1])}else if(d.r){p=d.r.split(':');rem(p[0],+p[1])}else if(d.p){p=d.p.split(':');put(p[0],+p[1])}else if(d.d){p=d.d.split(':');del(p[0],+p[1])}else if(d.n){S[d.n].push({n:'',w:'',b:0});go()}
 else if(d.rr)rerr();
@@ -250,15 +277,24 @@ else if(d.abo)absOpen();else if(d.abr)absRoll();else if(d.abx)absRe();else if(d.
 else if(d.bp){var k=+d.bp;S.bn.a=S.bn.a==k?k-1:k;save();paintBn()}
 else if(d.bm){S.bn.a=Math.max(0,S.bn.a+(+d.bm));save();paintBn()}
 else if(d.ns)novaSessao();else if(d.pp5)pp5()
-else if(d.img){if(d.img=='pick')$('fi').click();else if(d.img=='paste')pasteImg();else if(d.img=='del')cfm('Remover a imagem do personagem?','Remover',function(){IMGD='';lsDel(IK+CUR);render()})}});
+else if(d.img){if(d.img=='pick')$('fi').click();else if(d.img=='paste')pasteImg();else if(d.img=='del')cfm('Remover a imagem do personagem?','Remover',function(){IMGD='';lsDel(IK+CUR);render()})}
+else if(d.cast!==undefined)castOpen(+d.cast)
+else if(d.ct)castRoll();else if(d.cx)castRe();else if(d.cok)castGo()
+else if(d.ak!==undefined)actKeep(+d.ak);else if(d.ae!==undefined)actEnd(+d.ae)
+else if(d.rest)rest1h();else if(d.bk)expAll()
+else if(d.rhx!==undefined){S.rh.splice(+d.rhx,1);save();paintRh()}
+else if(d.mg)moneyTx(-1);else if(d.mr)moneyTx(1)
+else if(d.xadd)xAdd();else if(d.xdel){var rw=b.closest('.cxr');if(rw)rw.remove();castCalc()}});
 document.addEventListener('keydown',function(e){if(e.key=='Escape')modal();else if(e.key=='Enter'&&e.target.id=='pv'){var b=document.querySelector('#md [data-cb="2"]');if(b)b.click()}});
-document.addEventListener('input',function(e){var t=e.target,k=t.dataset.k;
-if(k){S[k]=t.type=='checkbox'?(t.checked?1:0):t.type=='number'?(+t.value||0):t.value;save();calc()}
+document.addEventListener('input',function(e){var t=e.target,k=t.dataset.k;if(t.hasAttribute('data-cc')){castCalc();return}
+if(k){S[k]=t.type=='checkbox'?(t.checked?1:0):t.type=='number'?(+t.value||0):t.value;save();calc();ldCalc()}
 else if(t.hasAttribute('data-bi')){S.bn.i=Math.max(0,Math.floor(+t.value||0));save()}
+else if(t.dataset.ai!=null){S.act[t.dataset.ai].al=Math.max(1,Math.floor(+t.value)||1);save()}
 else if(t.dataset.wi!=null){S.wp[t.dataset.wi][t.dataset.f]=t.value;save()}
-else if(t.dataset.ei!=null){S.equip[t.dataset.ei][t.dataset.f]=t.type=='checkbox'?(t.checked?1:0):t.value;save();calc()}
+else if(t.dataset.mo){S.money[t.dataset.mo]=Math.max(0,Math.floor(+t.value||0));save();moneyPaint()}
+else if(t.dataset.ei!=null){var qe=S.equip[t.dataset.ei],fe=t.dataset.f;qe[fe]=t.type=='checkbox'?(t.checked?1:0):(fe=='q'?Math.max(0,+t.value||0):t.value);var we=$('ew'+t.dataset.ei);if(we)we.textContent=itW(qe)+' kg';save();ldCalc()}
 else if(t.dataset.si!=null&&t.dataset.f=='n'){S.sk[t.dataset.si].n=t.value;save();calc()}});
-document.addEventListener('change',function(e){var t=e.target;
+document.addEventListener('change',function(e){var t=e.target;if(t.hasAttribute('data-cc')){castCalc();return}
 if(t.dataset.at){S.att[t.dataset.at]=+t.value;go()}
 else if(t.dataset.si!=null){var s=S.sk[t.dataset.si],f=t.dataset.f;s[f]=f=='l'?+t.value:f=='c'?(t.checked?1:0):t.value;if(f=='n'&&SKL[s.n]){s.a=SKL[s.n][0];s.c=SKL[s.n][1]}go()}
 else if(t.hasAttribute('data-inc')){S.inc=t.checked?1:0;save()}
@@ -268,28 +304,101 @@ var SKL={Atirar:['agi',0],Atletismo:['agi',1],Cavalgar:['agi',0],'Ciência':['as
 $('skl').innerHTML=Object.keys(SKL).map(function(k){return '<option value="'+k+'">'}).join('');
 /* ---------- rolagens ---------- */
 function die(n){var r=Math.ceil(Math.random()*n),f=r,t=r;while(r==n){r=Math.ceil(Math.random()*n);t+=r}return[t,f]}
-function rdm(i){var wp=S.wp[i],t=String(wp.d||'').toLowerCase().split(' ').join('').replace(/−/g,'-').replace(/for(ça)?/g,'F'),parts=t.match(/[+-]?[^+-]+/g)||[],F=2*S.att['for']+2,tot=0,det=[],cap=t.indexOf('F')>=0,ex=$('rz')&&$('rz').checked;
+function dmgRoll(expr,ex){var t=String(expr||'').toLowerCase().split(' ').join('').replace(/−/g,'-').replace(/for(ça)?/g,'F'),parts=t.match(/[+-]?[^+-]+/g)||[],F=2*S.att['for']+2,tot=0,det=[],cap=t.indexOf('F')>=0;
 parts.forEach(function(p){var sg=p[0]=='-'?-1:1,b=p.replace(/^[+-]/,''),m,r;
 if(b=='F'){r=die(F);tot+=sg*r[0];det.push('For d'+F+': '+r[0])}
 else if(m=b.match(/^(\d*)d(\d+)$/)){var c=+m[1]||1,n=+m[2];if(cap&&n>F)n=F;for(var k=0;k<c;k++){r=die(n);tot+=sg*r[0];det.push('d'+n+': '+r[0])}}
 else if(!isNaN(parseFloat(b))){tot+=sg*parseFloat(b);det.push((sg>0?'+':'−')+b)}});
 if(ex){var q=die(6);tot+=q[0];det.push('ampliação d6: '+q[0])}
-return{n:wp.n,tot:tot,det:det,i:i}}
-function shd(r,note){LD=r;var T=+($('rt')||{}).value||0,el=$('roll'),h='<b style="font-size:1.5rem">'+r.tot+'</b><br>Dano: '+esc(r.n||'arma');
+return{tot:tot,det:det}}
+function rdm(i){var wp=S.wp[i],r=dmgRoll(wp.d,$('rz')&&$('rz').checked);r.n=wp.n;r.i=i;return r}
+function shd(r,note){LD=r;lg('dano '+(r.n||'arma')+': '+r.tot+(note?' ('+note+')':''));var T=+($('rt')||{}).value||0,el=$('roll'),h='<b style="font-size:1.5rem">'+r.tot+'</b><br>Dano: '+esc(r.n||'arma');
 if(T>0){var w=Math.floor((r.tot-T)/4);h+='<br>'+(r.tot<T?'Sem efeito (Resistência '+T+')':w<1?'Alvo fica Abalado':w+' ferimento'+(w>1?'s':''))}
 h+='<br><small>'+r.det.join(' · ')+(note?' · '+note:'')+'</small><br><button data-rd="1">Rerrolar dano (1 Bene · restam '+S.bn.a+')</button>';
 el.innerHTML=h;el.style.display='block';clearTimeout(el.t);el.t=setTimeout(function(){el.style.display='none'},12000)}
 function pn(x){return parseFloat(String(x).replace(',','.'))||0}
-function peso(){return +S.equip.reduce(function(a,q){return a+pn(q.w)*(q.b?.5:1)},0).toFixed(2)}
+function qn(q){var v=q.q;return(v===undefined||v===null||v==='')?1:(+v||0)}
+function itW(q){return +(pn(q.w)*qn(q)*(q.b?.5:1)).toFixed(2)}
+function peso(){return +S.equip.reduce(function(a,q){return a+itW(q)},0).toFixed(2)}
 function lim(){return 10*(S.att['for']+(S.fb?1:0))}
 function ovl(){return peso()>lim()}
-function rl(l,un,ak,lbl){var A=die(2*l+2),W=die(6),pen=S.ferm+S.fad,ov=(ak=='agi'&&ovl())?2:0,m=+$('rm').value||0;return{l:l,un:un,ak:ak,lbl:lbl,A:A[0],W:W[0],crit:A[1]==1&&W[1]==1,pen:pen,ov:ov,m:m,tot:Math.max(A[0],W[0])-pen-ov-(un?2:0)+m}}
+function rl(l,un,ak,lbl,ex){ex=+ex||0;var A=die(2*l+2),W=die(6),pen=S.ferm+S.fad,ov=(ak=='agi'&&ovl())?2:0,m=+$('rm').value||0;return{l:l,un:un,ak:ak,lbl:lbl,A:A[0],W:W[0],crit:A[1]==1&&W[1]==1,pen:pen,ov:ov,m:m,ex:ex,tot:Math.max(A[0],W[0])-pen-ov-(un?2:0)+m+ex}}
 function roll(l,ak,lbl){shw(rl(l||1,!l,ak,lbl))}
-function rdet(r){return D[r.l]+': '+r.A+' · coringa d6: '+r.W+(r.un?' · sem perícia −2':'')+(r.pen?' · ferimentos/fadiga −'+r.pen:'')+(r.ov?' · sobrecarga −2':'')+(r.m?' · mod. '+(r.m>0?'+':'')+r.m:'')}
-function shw(r,note){LR=r;var el=$('roll'),t=r.tot,h='<b style="font-size:1.5rem">'+(r.crit?'—':t)+'</b><br>'+(r.crit?'Falha crítica! Falha automática, não pode ser rerrolada.':t<4?'Falha (Dif. 4)':t>=8?'Sucesso com '+Math.floor((t-4)/4)+' ampliação(ões)':'Sucesso')+'<br><small>'+rdet(r)+(note?' · '+note:'')+'</small>';
+function rdet(r){return D[r.l]+': '+r.A+' · coringa d6: '+r.W+(r.un?' · sem perícia −2':'')+(r.pen?' · ferimentos/fadiga −'+r.pen:'')+(r.ov?' · sobrecarga −2':'')+(r.m?' · mod. '+(r.m>0?'+':'')+r.m:'')+(r.ex?' · conjuração '+(r.ex>0?'+':'')+r.ex:'')}
+function shw(r,note){LR=r;lg((r.lbl||'rolagem')+': '+(r.crit?'falha crítica':r.tot)+(note?' ('+note+')':''));var el=$('roll'),t=r.tot,h='<b style="font-size:1.5rem">'+(r.crit?'—':t)+'</b><br>'+(r.crit?'Falha crítica! Falha automática, não pode ser rerrolada.':t<4?'Falha (Dif. 4)':t>=8?'Sucesso com '+Math.floor((t-4)/4)+' ampliação(ões)':'Sucesso')+'<br><small>'+rdet(r)+(note?' · '+note:'')+'</small>';
 if(!r.crit)h+='<br><button data-rr="1">Rerrolar (1 Bene · restam '+S.bn.a+')</button>';
 el.innerHTML=h;el.style.display='block';clearTimeout(el.t);el.t=setTimeout(function(){el.style.display='none'},12000)}
 function rerr(){var o=LR;if(!o||o.crit)return;if(!spend('rerrolou '+(o.lbl||'rolagem')))return;var n=rl(o.l,o.un,o.ak,o.lbl);if(n.crit)return shw(n,'a rerrolagem foi falha crítica');shw(n.tot>o.tot?n:o,n.tot>o.tot?'rerrolagem melhor: mantida':'rerrolagem pior: vale o total anterior')}
+/* ---------- histórico de rolagens ---------- */
+function lg(t){if(!S)return;if(!Array.isArray(S.rh))S.rh=[];S.rh.unshift({t:t,h:hora()});S.rh=S.rh.slice(0,10);save();paintRh()}
+function paintRh(){var el=$('rh');if(!el||!S)return;el.innerHTML='<h2>Últimas rolagens</h2>'+(S.rh&&S.rh.length?'<ol class="hist">'+S.rh.map(function(x,i){return '<li>'+esc(x.t)+' <small>('+esc(x.h)+')</small> <button class="x" data-rhx="'+i+'" aria-label="Remover do histórico" style="padding:0 6px;border:0;background:none">✕</button></li>'}).join('')+'</ol>':'<p class="pt">Nenhuma rolagem ainda.</p>')}
+/* ---------- conjuração (livro, cap. 5, p. 175-180) ---------- */
+var CAST=null;
+var GM=[{n:'Arma Pesada',c:2},{n:'Atrasar/Apressar',c:1},{n:'Brilho/Mortalha',c:1},{n:'Conjuração Adaptável',c:1},{n:'Dano Persistente',c:2},{n:'Fadiga',c:2},{n:'Seletivo',c:1}];
+function addFad(){if(S.fad>=2)S.inc=1;else S.fad++}
+function skDef(p){var f=-1,want=String(p.sk||'').trim().toLowerCase();
+if(want)S.sk.forEach(function(s,k){if(f<0&&s.n.trim().toLowerCase()==want)f=k});
+if(f<0)['conjurar','fé','performance','ocultismo'].forEach(function(n){if(f<0)S.sk.forEach(function(s,k){if(f<0&&s.n.trim().toLowerCase()==n)f=k})});
+return f<0?0:f}
+function pmods(p){return String(p.mm||'').split(/\n/).map(function(t){return t.trim()}).filter(Boolean).map(function(t){var m=t.match(/^(.*?)\s*[=:(]\s*\+?(\d+)\s*\)?\s*$/);return m?{n:m[1]||t,c:+m[2]}:{n:t,c:0}})}
+function xrow(n,c,q,sv){return '<div class="g cxr" data-sv="'+(sv?1:0)+'" style="grid-template-columns:2fr 1fr 1fr auto;align-items:end;margin-top:4px"><label>Extra<input class="cxn" data-cc value="'+esc(n)+'" placeholder="Alvo adicional"></label><label>PP cada<input class="cxc" type="number" min="0" data-cc value="'+c+'"></label><label>Quantidade<input class="cxq" type="number" min="0" data-cc value="'+q+'"></label><button type="button" data-xdel="1" aria-label="Remover extra">✕</button></div>'}
+function xAdd(){var l=$('cxl');if(!l)return;l.insertAdjacentHTML('beforeend',xrow('',1,1,false));var n=l.querySelectorAll('.cxn');if(n.length)n[n.length-1].focus();castCalc()}
+function castOpen(i){
+if(!S.sk.length){tst('Adicione a perícia arcana (ex.: Conjurar) em Perícias antes de conjurar.');return}
+var trk=i<0,p=trk?{n:'Truque',pp:'0',r:'',dur:'',lim:0,mm:'',dm:'',sk:''}:S.pw[i];if(!p)return;
+var base=parseInt(p.pp,10);if(isNaN(base))base=1;CAST={i:i,trk:trk};var def=skDef(p);
+var sel='<label>Perícia arcana<select id="cs" data-cc>'+S.sk.map(function(s,k){return '<option value="'+k+'"'+(k==def?' selected':'')+'>'+esc(s.n)+' ('+D[s.l]+')</option>'}).join('')+'</select></label>';
+var h='<h2>'+(trk?'Conjurar truque':esc(p.n))+'</h2>';
+if(trk)h+='<p class="pt">Sem custo de PP; deve ser baseado em um dos seus poderes.</p><div class="g">'+sel+'</div>';
+else{
+h+='<div class="pt">'+meta(p)+'</div><div class="g">'+sel+'<label>Custo base (PP)<input id="cb" type="number" min="0" data-cc value="'+base+'"></label></div>';
+h+='<details style="margin-top:8px"><summary id="cxsum" style="cursor:pointer;font-weight:700">Modificadores e extras</summary><div class="mods" style="margin-top:6px">'+GM.map(function(m){return '<label class="ck"><input type="checkbox" class="cm" data-cc data-c="'+m.c+'" data-mn="'+esc(m.n)+'"> '+esc(m.n)+' (+'+m.c+')</label>'}).join('')+'</div>';
+h+='<div class="g" style="margin-top:8px"><label>Distância<select id="cd" data-cc><option value="0">padrão</option><option value="1">dobrada (+1)</option><option value="2">triplicada (+2)</option></select></label><label>Perfurante de Armadura<select id="cp" data-cc><option value="0">nenhum</option><option value="1">PA 2 (+1)</option><option value="2">PA 4 (+2)</option><option value="3">PA 6 (+3)</option></select></label></div>';
+h+='<div id="cxl">'+pmods(p).map(function(m){return xrow(m.n,m.c,0,true)}).join('')+'</div><div class="no" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px"><button data-xadd="1">+ Adicionar extra</button><label class="ck"><input type="checkbox" id="cxs" checked> Guardar extras novos neste poder</label></div></details>';
+h+='<details style="margin-top:6px"><summary style="cursor:pointer;font-weight:700">Avançado</summary><div class="g" style="margin-top:6px"><label>Limitações<input id="cl" type="number" min="0" data-cc value="'+(+p.lim||0)+'"></label><label>PP livres (outros custos)<input id="cx" type="number" min="0" data-cc value="0"></label><label>Reduzir o custo em (PP)<input id="cr" type="number" min="0" data-cc value="0"></label><label>Resistência do alvo<input id="ct" type="number" data-cc></label></div><label class="ck" style="margin-top:6px"><input type="checkbox" id="ctk" data-cc> Conjurar como truque (sem custo e sem dano)</label></details>'}
+h+='<p class="pt" id="cprev" style="margin-top:8px"></p><div class="bt"><button data-cb="0">Cancelar</button><button data-ct="1" style="background:var(--red);color:#fff">Rolar</button></div>';
+modal(h);castCalc()}
+function castRead(){var g=function(id){var e=$(id);return e?(+e.value||0):0},mods=[],nw=[],mc=0,ck=!!(CAST&&CAST.trk)||!!($('ctk')&&$('ctk').checked);
+Array.prototype.forEach.call($('md').querySelectorAll('.cm'),function(e){if(e.checked){mods.push(e.getAttribute('data-mn'));mc+=+e.getAttribute('data-c')||0}});
+Array.prototype.forEach.call($('md').querySelectorAll('.cxr'),function(r){var n=(r.querySelector('.cxn').value||'').trim(),c=+r.querySelector('.cxc').value||0,q=+r.querySelector('.cxq').value||0;if(q>0&&c>=0){mc+=c*q;mods.push((n||'Extra')+(q>1?' ×'+q:'')+' (+'+c*q+')')}if(r.getAttribute('data-sv')!='1'&&n)nw.push({n:n,c:c})});
+var d=g('cd'),pa=g('cp');if(d){mc+=d;mods.push(d==1?'Distância ×2':'Distância ×3')}if(pa){mc+=pa;mods.push('PA '+2*pa)}
+var base=g('cb'),x=g('cx'),lim=g('cl'),tot=base+mc+x,eff=tot,bonus=0;
+if(lim>0&&tot>=1){eff=tot-lim;if(eff<1){bonus=Math.min(2,1-eff);eff=1}}
+var ppa=Math.max(0,+S.ppa||0),manual=g('cr'),red=ck?0:Math.max(manual,Math.max(0,eff-ppa));
+return{sk:g('cs'),base:base,mc:mc,x:x,lim:lim,eff:ck?0:eff,bonus:ck?0:bonus,red:red,ck:ck,mods:mods,ppa:ppa,tr:g('ct'),nw:nw,keep:!!($('cxs')&&$('cxs').checked),ex:ck?0:bonus-red,auto:!ck&&eff-ppa>manual}}
+function castCalc(){var c=castRead(),el=$('cprev'),sm=$('cxsum');if(!el)return;
+if(sm)sm.textContent='Modificadores e extras'+(c.mods.length?' ('+c.mods.length+' ativo'+(c.mods.length>1?'s':'')+')':'');
+if(c.ck){el.innerHTML='Truque: sem custo de PP. Falha crítica faz perder 1 PP (ou sofrer Fadiga se não tiver PP).';return}
+el.innerHTML='Custo: <b>'+c.eff+' PP</b>'+((c.mc||c.x||c.lim)?' <small>(base '+c.base+(c.mc?' + extras '+c.mc:'')+(c.x?' + livres '+c.x:'')+(c.lim?' − limitações '+c.lim:'')+')</small>':'')+' · você tem '+c.ppa+' PP'+(c.bonus?'<br>Bônus de limitação: <b>+'+c.bonus+'</b> na rolagem':'')+(c.red?'<br>Custo reduzido em '+c.red+(c.auto?' (automático, faltam PP)':'')+': gasta <b>'+(c.eff-c.red)+'</b> PP e a rolagem recebe <b>−'+c.red+'</b>. Falhar nisso conta como Falha Crítica.':'')}
+function castRoll(){var c=castRead(),s=S.sk[c.sk];if(!s){tst('Escolha a perícia arcana.');return}
+var p=CAST.i<0?{n:'Truque'}:S.pw[CAST.i];c.name=p.n;CAST.c=c;CAST.dmg=null;CAST.r=rl(s.l||1,!s.l,s.a,s.n,c.ex);
+lg('conjurar '+c.name+' ('+s.n+'): '+(CAST.r.crit?'falha crítica':CAST.r.tot));castShow()}
+function castOut(){var c=CAST.c,r=CAST.r,o={crit:r.crit,fail:!r.crit&&r.tot<4};o.ok=!o.crit&&!o.fail;o.raises=o.ok?Math.floor((r.tot-4)/4):0;
+o.shock=!c.ck&&(o.crit||(o.fail&&c.red>0));
+o.pp=c.ck?(o.crit?1:0):(o.ok?Math.max(0,c.eff-c.red):1);return o}
+function castShow(note){var c=CAST.c,r=CAST.r,o=castOut(),p=CAST.i<0?null:S.pw[CAST.i],t,dm='';
+if(o.crit)t=c.ck?'<b>Falha crítica!</b> Perde 1 PP (ou sofre 1 nível de Fadiga se não tiver PP) e ocorre um pequeno acidente.':'<b>Falha crítica!</b> Choque de Retorno: 1 nível de Fadiga e todos os poderes ativos terminam. Perde 1 PP.';
+else if(o.fail)t='<b>Falha:</b> o poder não é ativado.'+(c.ck?' Sem custo.':' Perde 1 PP.')+(o.shock?' Como o custo foi reduzido, conta como <b>Falha Crítica</b>: Choque de Retorno (1 nível de Fadiga e os poderes ativos terminam).':'');
+else t='<b>Sucesso</b>'+(o.raises?' com '+o.raises+' ampliaç'+(o.raises>1?'ões':'ão')+' (efeitos extras na descrição do poder)':'')+'.';
+if(o.ok&&!c.ck&&p&&String(p.dm||'').trim()){if(!CAST.dmg)CAST.dmg=dmgRoll(p.dm,o.raises>0);var dd=CAST.dmg,w=Math.floor((dd.tot-c.tr)/4);
+dm='<p>Dano: <b>'+dd.tot+'</b> <small>('+dd.det.join(' · ')+')</small>'+(c.tr>0?' · '+(dd.tot<c.tr?'sem efeito':w<1?'alvo Abalado':w+' ferimento'+(w>1?'s':'')):'')+'</p>'}
+var pp=c.ck?(o.crit?'PP: <b>−1</b>':'PP: nenhum'):'PP gastos: <b>'+o.pp+'</b> (restam '+Math.max(0,c.ppa-o.pp)+')';
+modal('<h2>'+esc(c.name)+'</h2><p><b style="font-size:1.4rem">'+(r.crit?'—':r.tot)+'</b> em '+esc(r.lbl)+'<br><small>'+rdet(r)+(note?' · '+esc(note):'')+'</small></p><p>'+t+'</p>'+dm+'<p class="pt">'+pp+(c.mods.length&&o.ok?'<br>Modificadores: '+esc(c.mods.join(', ')):'')+'</p><div class="bt">'+(r.crit?'':'<button data-cx="1">Rerrolar (1 Bene · restam '+S.bn.a+')</button>')+'<button data-cok="1" style="background:var(--red);color:#fff">Confirmar e gastar PP</button><button data-cb="0">Descartar</button></div>')}
+function castRe(){var o=CAST.r;if(o.crit)return;var c=CAST.c,s=S.sk[c.sk];if(!s)return;if(!spend('rerrolou '+c.name))return;
+var n=rl(s.l||1,!s.l,s.a,s.n,c.ex);lg('rerrolou '+c.name+': '+(n.crit?'falha crítica':n.tot));
+if(n.crit){CAST.r=n;CAST.dmg=null;castShow('a rerrolagem foi falha crítica');return}
+if(n.tot>o.tot){CAST.r=n;CAST.dmg=null;castShow('rerrolagem melhor: mantida')}else castShow('rerrolagem pior: vale o total anterior')}
+function castGo(){var c=CAST.c,o=castOut(),p=CAST.i<0?null:S.pw[CAST.i],ms=[];
+if(p&&!c.ck&&c.keep&&c.nw.length){var cur=pmods(p).map(function(m){return m.n.toLowerCase()});c.nw.forEach(function(x){if(cur.indexOf(x.n.toLowerCase())<0){p.mm=(p.mm?p.mm+'\n':'')+x.n+' = '+x.c;cur.push(x.n.toLowerCase())}})}
+if(c.ck){if(o.crit){if((+S.ppa||0)>=1){S.ppa-=1;ms.push('−1 PP')}else{addFad();ms.push('Fadiga')}}}
+else{S.ppa=Math.max(0,(+S.ppa||0)-o.pp);ms.push('−'+o.pp+' PP')}
+if(o.shock){addFad();S.act=[];ms.push('Choque de Retorno')}
+if(o.ok&&!c.ck&&p&&String(p.dur||'').trim()&&!/instant/i.test(p.dur)){S.act.push({n:p.n,al:1,dur:p.dur});ms.push('poder ativo')}
+lg('conjurou '+c.name+(o.ok?' (sucesso'+(o.raises?', '+o.raises+' amp.':'')+')':o.crit?' (falha crítica)':' (falha)')+': '+ms.join(', '));
+CAST=null;modal();go();tst(ms.join(' · '))}
+function actKeep(i){var a=S.act[i];if(!a)return;var n=Math.max(1,+a.al||1);if((+S.ppa||0)<n){tst('PP insuficientes para manter ('+n+').');return}S.ppa-=n;lg('manteve '+a.n+' ('+n+' PP)');go();tst('Poder mantido: −'+n+' PP')}
+function actEnd(i){S.act.splice(i,1);go()}
+function rest1h(){var M=+S.ppm||0,A=+S.ppa||0;if(M>0&&A>=M){tst('Os PP já estão no máximo.');return}S.ppa=M>0?Math.min(M,A+5):A+5;lg('descansou 1 hora: +5 PP');go()}
 /* ---------- imagem ---------- */
 function enc(c,q){var d=c.toDataURL('image/webp',q);if(d.indexOf('data:image/webp')!=0)d=c.toDataURL('image/jpeg',q);return d}
 function procImg(b){if(!b||!/^image\//.test(b.type||'')){tst('Esse arquivo não é uma imagem.');return}
@@ -307,7 +416,7 @@ $('fi').addEventListener('change',function(e){var a=Array.prototype.slice.call(e
 function fnm(s){return ((s||'ficha').replace(/[\\\/:*?"<>|]+/g,'').trim())||'ficha'}
 function dl(text,name){var b=new Blob([text],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},2000)}
 function exp(){save();var o=JSON.parse(JSON.stringify(S));o.img=IMGD||'';dl(JSON.stringify(o,null,1),fnm(S.nome)+'.json')}
-function expAll(){var arr=IDX.map(function(m){var j=null;try{j=JSON.parse(rd(FK+m.id))}catch(e){}if(!j)return null;j.img=rd(IK+m.id)||'';return j}).filter(Boolean);if(!arr.length){tst('Não há fichas para exportar.');return}dl(JSON.stringify({tipo:'sw-pf-todas',v:1,fichas:arr}),'fichas-savage-pathfinder.json')}
+function expAll(){var arr=IDX.map(function(m){var j=null;try{j=JSON.parse(rd(FK+m.id))}catch(e){}if(!j)return null;j.img=rd(IK+m.id)||'';return j}).filter(Boolean);if(!arr.length){tst('Não há fichas para exportar.');return}dl(JSON.stringify({tipo:'sw-pf-todas',v:1,fichas:arr}),'fichas-savage-pathfinder.json');wr(KEY+':bk',String(Date.now()));tst('Backup exportado. Guarde o arquivo em um lugar seguro.');if(VIEW=='lobby')renderLobby()}
 function readFiles(files,cb){var out=[],n=files.length,c=0;if(!n)return;Array.prototype.forEach.call(files,function(f,ix){var r=new FileReader();r.onload=function(){var j=null;try{j=JSON.parse(r.result)}catch(e){}out[ix]=j;if(++c==n)cb(out)};r.onerror=function(){out[ix]=null;if(++c==n)cb(out)};r.readAsText(f)})}
 function fichasDe(j){if(!j)return[];if(Array.isArray(j))return j.filter(function(x){return x&&x.att});if(Array.isArray(j.fichas))return j.fichas.filter(function(x){return x&&x.att});return j.att?[j]:[]}
 function addF(s){var id=nid();if(!wr(FK+id,JSON.stringify(s))){warn();return null}IDX.unshift(metaOf(id,s));saveIdx();return id}
@@ -320,10 +429,13 @@ $('fm').addEventListener('change',function(e){var a=Array.prototype.slice.call(e
 /* ---------- lobby ---------- */
 function setView(v){VIEW=v;$('hl').hidden=v!='lobby';$('hs').hidden=v!='sheet';$('tabs').hidden=v!='sheet';$('lobby').hidden=v!='lobby';$('app').hidden=v!='sheet';
 $('ht').textContent=v=='lobby'?'Fichas · Pathfinder para Savage Worlds':'Ficha de Personagem · Pathfinder para Savage Worlds';
-if(v=='lobby')renderLobby();else{$('t1').className=TAB=='ficha'?'on':'';$('t2').className=TAB=='pw'?'on':'';render()}
+if(v=='lobby')renderLobby();else{$('t1').className=TAB=='ficha'?'on':'';$('t2').className=TAB=='pw'?'on':'';$('t3').className=TAB=='eq'?'on':'';render()}
 window.scrollTo(0,0)}
 function renderLobby(){var L=IDX.slice().sort(function(a,b){return(b.t||0)-(a.t||0)});
 var h='<p class="pt">'+L.length+' ficha'+(L.length==1?'':'s')+' neste navegador · uso de ~'+usage()+' KB (o limite costuma ficar em torno de 5 MB). As fichas ficam só neste aparelho: use Exportar para ter cópia de segurança.</p>';
+if(L.length){var bt=+rd(KEY+':bk')||0,bd=bt?Math.floor((Date.now()-bt)/864e5):-1;
+if(!bt||bd>=7)h+='<section class="wide" style="border-top-color:var(--brass)"><h2>Backup</h2><p>'+(bt?'Faz '+bd+' dias que você não exporta suas fichas.':'Você ainda não exportou suas fichas.')+' O navegador pode perder os dados guardados (limpeza de dados, falta de espaço), então vale ter uma cópia.</p><button data-bk="1" style="background:var(--red);color:#fff;border-color:var(--red)">Exportar todas agora</button></section>';
+else h+='<p class="pt">Último backup: '+new Date(bt).toLocaleDateString('pt-BR')+' (há '+bd+' dia'+(bd==1?'':'s')+').</p>'}
 if(!L.length)h+='<section><h2>Nenhuma ficha ainda</h2><p>Crie uma ficha nova, carregue o Balduin como exemplo ou importe um arquivo .json.</p></section>';
 L.forEach(function(m){var im=rd(IK+m.id),nm=m.nome||'(sem nome)';
 h+='<article class="fc"><button class="th" data-lo="'+m.id+'" aria-label="Abrir '+esc(nm)+'">'+(im?'<img src="'+im+'" alt="">':'<span>'+esc((m.nome||'?').charAt(0).toUpperCase())+'</span>')+'</button><div class="fi"><b>'+esc(nm)+'</b><span>'+esc([m.anc,m.classe].filter(Boolean).join(' · ')||'sem ancestralidade ou classe')+'</span><span>'+est(m.prog)+'</span></div><div class="fa"><button data-lo="'+m.id+'" style="background:var(--red);color:#fff;border-color:var(--red)">Abrir</button><button data-ld="'+m.id+'">Duplicar</button><button data-lr="'+m.id+'">Renomear</button><button class="x" data-lx="'+m.id+'">Excluir</button></div></article>'});
@@ -345,9 +457,11 @@ P.sk.forEach(function(s){s.l=L[s.n]||0;delete L[s.n]});Object.keys(L).forEach(fu
 P.comp=[{n:'Código de Honra (Maior)',d:'Mantém sua palavra e age sempre com nobreza.'},{n:'Inimigo (Menor)',d:'Possui um nêmesis recorrente.'},{n:'Não Sabe Nadar (Menor)',d:'−2 em rolagens de nadar (Atletismo); cada quadro na água custa 3 de Movimentação.'}];
 P.anc_h=[{n:'Aptidão com Pedras',d:'Perceber +2 como uma ação livre para encontrar trabalhos em pedra incomuns, como armadilhas e portas escondidas, a até 3 metros. Ampliar pode render mais detalhes.'},{n:'Constituição de Ferro',d:'Anões recebem +1 para resistir a venenos. Também recebem +1 para se recuperar de poderes ou habilidades que funcionem como um poder.'},{n:'Movimentação Reduzida',d:'Reduza sua Movimentação em 1 e seu dado de corrida em um tipo.'},{n:'Resistente',d:'São fortes e resistentes, começando com um d6 em Vigor em vez de um d4. Isso aumenta o Vigor máximo para d12+1. Tratam sua Força como um tipo de dado maior para determinar Sobrecarga e Força Máxima para usar armaduras e equipamentos sem penalidade (mas não armas). Essa habilidade se acumula com a Vantagem Musculoso, se a personagem a possuir.'},{n:'Visão no Escuro',d:'Olhos anões estão acostumados à escuridão do subterrâneo. Ignoram penalidades de iluminação até 10 quadros (20 metros).'}];
 P.edges=[{n:'Inimigo Predileto (Humanoide)',d:'Patrulheiros estudam seus inimigos, aprendem seus caminhos, como encontrá-los e como derrotá-los. Têm uma rerrolagem gratuita quando falham em rastrear (Sobrevivência) ou atacar (Atletismo para arremessar, Lutar, Atirar) aquele tipo de criatura.'},{n:'Restrição de Armadura (Média)',d:'Patrulheiros são guerreiros e batedores com agilidade e mobilidade. Subtraem 4 das rolagens de Agilidade e perícias baseadas em Agilidade ao usar armaduras ou escudo pesados.'},{n:'Terreno Predileto (Montanhas/Colinas)',d:'Patrulheiros sacam uma Carta de Ação adicional para iniciativa quando estão em seu Terreno Predileto. Isso não tem efeito no número de cartas que podem usar: com a Vantagem Focado ainda se escolhe qual usar, e com a Complicação Hesitante deve-se escolher a pior.'},{n:'Travessia de Floresta',d:'Patrulheiros passam por terrenos difíceis como floresta densa, colinas rochosas ou desertos arenosos com facilidade. Ignoram as penalidades de Terreno Acidentado.'},{n:'Senhor das Feras',d:''},{n:'Arma Predileta (Mathilda)',d:''},{n:'Recarregamento Rápido',d:''}];
-P.equip=[{n:'Mochila',w:'1',b:0},{n:'Odre',w:'2',b:1},{n:'Pé de cabra',w:'2,5',b:1},{n:'Polia e corda',w:'2,5',b:1},{n:'Tela de lona (2 pessoas)',w:'10',b:1},{n:'4 tochas',w:'2',b:1},{n:'Ração animal (2)',w:'4,5',b:1},{n:'Ração (4)',w:'2',b:1},{n:'Armadura de escamas, capuz e calças leves',w:'15,5',b:0},{n:'Traje de viajante',w:'2,5',b:0},{n:'Traje de frio',w:'3,5',b:1},{n:'Machado de mão',w:'1,5',b:0},{n:'Mathilda (mosquete de dois canos)',w:'5,5',b:0},{n:'85 balas',w:'0,75',b:1},{n:'Pederneira e aço, sabão, saco, 5 velas, esfera de respirar debaixo d’água (3 usos)',w:'',b:1},{n:'Dinheiro: 75 po, 90 pc, 5 pp',w:'',b:0}];
-P.wp=[{n:'Machado de mão',r:'',d:'For+d6',pa:'',rof:'1',w:'1,5'},{n:'Mathilda (mosquete de dois canos)',r:'10/20/40',d:'2d8+1',pa:'2',rof:'1',w:'5,5'}];
+P.equip=[{n:'Mochila',w:'1',b:0},{n:'Odre',w:'2',b:1},{n:'Pé de cabra',w:'2,5',b:1},{n:'Polia e corda',w:'2,5',b:1},{n:'Tela de lona (2 pessoas)',w:'10',b:1},{n:'4 tochas',w:'2',b:1},{n:'Ração animal (2)',w:'4,5',b:1},{n:'Ração (4)',w:'2',b:1},{n:'Armadura de escamas, capuz e calças leves',w:'15,5',b:0},{n:'Traje de viajante',w:'2,5',b:0},{n:'Traje de frio',w:'3,5',b:1},{n:'Machado de mão',w:'1,5',b:0},{n:'Mathilda (mosquete de dois canos)',w:'5,5',b:0},{n:'85 balas',w:'0,75',b:1},{n:'Pederneira e aço, sabão, saco, 5 velas, esfera de respirar debaixo d’água (3 usos)',w:'',b:1}];
+P.money={pl:0,po:75,pp:5,pc:90};P.wp=[{n:'Machado de mão',r:'',d:'For+d6',pa:'',rof:'1',w:'1,5'},{n:'Mathilda (mosquete de dois canos)',r:'10/20/40',d:'2d8+1',pa:'2',rof:'1',w:'5,5'}];
 return P}
+window.addEventListener('beforeprint',function(){if(VIEW!='sheet'||!S)return;PBUF='';renderFicha();renderEq();var all=PBUF;PBUF=null;$('app').innerHTML=all;calc();ldCalc();moneyPaint()});
+window.addEventListener('afterprint',function(){if(VIEW=='sheet')render()});
 idbOpen(function(){boot();if(NOLS||Object.keys(IDBK).length)banner();setView('lobby')});
 </script>
 </body>
